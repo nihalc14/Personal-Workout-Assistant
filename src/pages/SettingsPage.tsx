@@ -1,10 +1,42 @@
 import { useRef, useState } from 'react';
 import { exportAll, importAll } from '../db/queries';
-import type { ExportBundle } from '../types';
+import { loadProfile, saveProfile } from '../logic/profile';
+import type { ExportBundle, ExperienceLevel, FitnessGoal, Sex, UserProfile } from '../types';
+
+const GOAL_LABELS: Record<FitnessGoal, string> = {
+  'build-strength': 'Build Strength',
+  'lose-fat': 'Lose Fat',
+  'stay-consistent': 'Stay Consistent',
+  'general-fitness': 'General Fitness',
+};
+
+const LEVEL_LABELS: Record<ExperienceLevel, string> = {
+  beginner: 'Beginner',
+  intermediate: 'Intermediate',
+  advanced: 'Advanced',
+};
 
 export default function SettingsPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [message, setMessage] = useState('');
+  const [profile, setProfile] = useState<UserProfile | null>(() => loadProfile());
+  const [profileMessage, setProfileMessage] = useState('');
+
+  function updateProfile(patch: Partial<UserProfile>) {
+    if (!profile) return;
+    setProfile({ ...profile, ...patch });
+    setProfileMessage('');
+  }
+
+  function handleProfileSave() {
+    if (!profile) return;
+    if (profile.name.trim() === '' || profile.age < 10 || profile.age > 100 || Number.isNaN(profile.age)) {
+      setProfileMessage('Enter a name and a valid age (10–100).');
+      return;
+    }
+    saveProfile({ ...profile, name: profile.name.trim() });
+    setProfileMessage('Profile saved.');
+  }
 
   async function handleExport() {
     const bundle = await exportAll();
@@ -38,6 +70,68 @@ export default function SettingsPage() {
   return (
     <div>
       <h1>Settings</h1>
+
+      {profile && (
+        <div className="card">
+          <h3>Profile</h3>
+          <div className="field-row">
+            <label className="muted" style={{ width: 90 }}>Name</label>
+            <input
+              type="text"
+              style={{ width: 'auto', flex: 1, textAlign: 'left' }}
+              value={profile.name}
+              onChange={(e) => updateProfile({ name: e.target.value })}
+            />
+          </div>
+          <div className="field-row">
+            <label className="muted" style={{ width: 90 }}>Age</label>
+            <input
+              type="number"
+              inputMode="numeric"
+              min={10}
+              max={100}
+              value={Number.isNaN(profile.age) ? '' : profile.age}
+              onChange={(e) => updateProfile({ age: Number(e.target.value) })}
+            />
+          </div>
+          <div className="field-row">
+            <label className="muted" style={{ width: 90 }}>Sex</label>
+            <select
+              value={profile.sex}
+              onChange={(e) => updateProfile({ sex: e.target.value as Sex })}
+            >
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
+          </div>
+          <div className="field-row">
+            <label className="muted" style={{ width: 90 }}>Goal</label>
+            <select
+              value={profile.goal}
+              onChange={(e) => updateProfile({ goal: e.target.value as FitnessGoal })}
+            >
+              {(Object.keys(GOAL_LABELS) as FitnessGoal[]).map((g) => (
+                <option key={g} value={g}>{GOAL_LABELS[g]}</option>
+              ))}
+            </select>
+          </div>
+          <div className="field-row">
+            <label className="muted" style={{ width: 90 }}>Experience</label>
+            <select
+              value={profile.experience}
+              onChange={(e) => updateProfile({ experience: e.target.value as ExperienceLevel })}
+            >
+              {(Object.keys(LEVEL_LABELS) as ExperienceLevel[]).map((l) => (
+                <option key={l} value={l}>{LEVEL_LABELS[l]}</option>
+              ))}
+            </select>
+          </div>
+          <div className="btn-row">
+            <button className="btn" onClick={handleProfileSave}>Save profile</button>
+          </div>
+          {profileMessage && <p className="muted" style={{ marginTop: 8 }}>{profileMessage}</p>}
+        </div>
+      )}
 
       <div className="card">
         <h3>Backup</h3>

@@ -1,5 +1,19 @@
 export type Equipment = 'barbell' | 'dumbbell' | 'machine' | 'cable' | 'bodyweight';
 
+export type Sex = 'male' | 'female';
+
+export type FitnessGoal = 'build-strength' | 'lose-fat' | 'stay-consistent' | 'general-fitness';
+
+export type ExperienceLevel = 'beginner' | 'intermediate' | 'advanced';
+
+export interface UserProfile {
+  name: string;
+  age: number;
+  sex: Sex;
+  goal: FitnessGoal;
+  experience: ExperienceLevel;
+}
+
 export interface Exercise {
   id: string;
   name: string;

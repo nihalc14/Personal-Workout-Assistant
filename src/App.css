@@ -247,3 +247,81 @@ input, select {
 .cues-list li {
   margin-bottom: 6px;
 }
+
+.onboarding {
+  display: flex;
+  flex-direction: column;
+  padding-top: 24px;
+}
+
+.onboarding-progress {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.onboarding-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #2a2e38;
+}
+
+.onboarding-dot.filled {
+  background: #4f8cff;
+}
+
+.onboarding-label {
+  display: block;
+  font-size: 13px;
+  color: #888;
+  margin: 14px 0 6px;
+}
+
+.onboarding-next {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.onboarding-grow {
+  flex: 1;
+}
+
+.option-toggle {
+  flex: 1;
+  background: #1a1d24;
+  border: 1px solid #2a2e38;
+  color: #f2f2f2;
+}
+
+.option-toggle.selected {
+  background: #1c2b47;
+  border-color: #4f8cff;
+  color: #4f8cff;
+}
+
+.option-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+  text-align: left;
+  background: #1a1d24;
+  border: 1px solid #2a2e38;
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 10px;
+  color: #f2f2f2;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.option-card.selected {
+  border-color: #4f8cff;
+  background: #1c2b47;
+}
+
+.onboarding .btn-row {
+  margin-top: 16px;
+}
